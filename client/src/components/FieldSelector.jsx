@@ -51,11 +51,11 @@ const FieldSelector = ({
   // Add custom field
   const addCustomField = () => {
     if (customField && !availableFields.some(f => f.value === customField)) {
-      const newField = {
-        label: customField,
-        value: customField,
-        custom: true
-      };
+      // const newField = {
+      //   label: customField,
+      //   value: customField,
+      //   custom: true
+      // };
       
       // Notify parent component to add new field
       onChange([...selectedFields, customField]);

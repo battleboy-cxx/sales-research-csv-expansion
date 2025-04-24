@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   Button, 
   Upload, 
@@ -25,7 +25,7 @@ const { Dragger } = Upload;
 
 const App = () => {
   // State management
-  const [file, setFile] = useState(null);
+  const [, setFile] = useState(null);
   const [csvData, setCsvData] = useState([]);
   const [headers, setHeaders] = useState([]);
   const [selectedFields, setSelectedFields] = useState([]);
