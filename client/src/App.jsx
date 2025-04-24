@@ -21,6 +21,7 @@ import axios from 'axios';
 // 导入自定义组件
 import FieldSelector from './components/FieldSelector';
 const { TabPane } = Tabs;
+const { Dragger } = Upload;
 
 const App = () => {
   // 状态管理
@@ -219,7 +220,7 @@ const App = () => {
             <h2>上传包含公司名称的CSV文件</h2>
             <p>CSV文件应至少包含一列公司名称。</p>
             
-            <Upload
+            <Dragger
               className="csv-uploader"
               name="file"
               customRequest={customRequest}
@@ -229,7 +230,7 @@ const App = () => {
             >
               <Button icon={<UploadOutlined />}>点击上传CSV文件</Button>
               <p className="upload-hint">或拖放CSV文件到此处</p>
-            </Upload>
+            </Dragger>
             
             {csvData.length > 0 && (
               <div className="upload-info">

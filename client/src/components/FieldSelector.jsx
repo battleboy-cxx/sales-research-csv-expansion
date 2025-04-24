@@ -169,6 +169,22 @@ const FieldSelector = ({
         </div>
         
         <Divider />
+
+        <div className="field-selector-select-all" style={{ margin: '12px 0' }}>
+        <Checkbox
+          indeterminate={
+            selectedFields.length > 0 &&
+            selectedFields.length < filteredFields.length
+          }
+          checked={selectedFields.length === filteredFields.length && filteredFields.length > 0}
+          onChange={(e) => {
+            const all = filteredFields.map(f => f.value);
+            onChange(e.target.checked ? all : []);
+          }}
+        >
+          全选 / Select All
+        </Checkbox>
+      </div>
         
         <div className="field-selector-available">
           <h3>可用字段</h3>
