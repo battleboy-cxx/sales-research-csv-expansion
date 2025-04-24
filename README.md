@@ -6,7 +6,7 @@
 
 - 上传CSV文件进行批量公司研究
 - 自定义选择需要的研究字段
-- 使用OpenRouter API接入DeepSeek等AI模型
+- 使用OpenRouter API接入perplexity/sonar-pro等AI模型
 - 实时展示处理进度
 - 导出包含研究结果的丰富CSV文件
 
@@ -49,7 +49,12 @@ npm run client-install
 
 ```
 PORT=5001
-NODE_ENV=development
+```
+
+创建`/client/.env`，添加一下内容:
+```
+PORT = 3000
+REACT_APP_OPENROUTER_API_KEY = {YOUR_OPENROUTER_API_KEY}
 ```
 
 4. 启动开发服务器

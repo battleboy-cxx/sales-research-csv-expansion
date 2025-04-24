@@ -117,7 +117,7 @@ const FieldSelector = ({
           label="OpenRouter API密钥" 
           required
           tooltip={{
-            title: '您需要一个有效的OpenRouter API密钥来使用DeepSeek模型',
+            title: '您需要一个有效的OpenRouter API密钥来使用perplexity/sonar-pro模型',
             icon: <InfoCircleOutlined />
           }}
         >

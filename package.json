@@ -1,7 +1,7 @@
 {
   "name": "company-research-tool",
   "version": "1.0.0",
-  "description": "AI-powered company research tool using OpenRouter and DeepSeek",
+  "description": "AI-powered company research tool using OpenRouter and perplexity/sonar-pro",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -17,7 +17,7 @@
     "research",
     "AI",
     "OpenRouter",
-    "DeepSeek",
+    "perplexity/sonar-pro",
     "CSV"
   ],
   "author": "",
