@@ -66,7 +66,8 @@ The company you need to do research is:
 
 // Middleware
 app.use(cors({
-    origin: 'http://localhost:3000', // Allow frontend domain access
+    // allow all origins
+    origin: '*',
     credentials: true, // If cookies need to be included
     methods: ['GET', 'POST'] // Allowed HTTP methods
   }));
