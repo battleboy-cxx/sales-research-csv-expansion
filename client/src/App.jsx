@@ -18,13 +18,13 @@ import './App.css';
 import Papa from 'papaparse';
 import axios from 'axios';
 
-// 导入自定义组件
+// Import custom components
 import FieldSelector from './components/FieldSelector';
 const { TabPane } = Tabs;
 const { Dragger } = Upload;
 
 const App = () => {
-  // 状态管理
+  // State management
   const [file, setFile] = useState(null);
   const [csvData, setCsvData] = useState([]);
   const [headers, setHeaders] = useState([]);
@@ -62,51 +62,51 @@ const App = () => {
     { label: 'ERP System', value: 'ERP System', description: 'Enterprise Resource Planning system used by the company' }
   ];
 
-  // 处理文件上传
+  // Handle file upload
   const handleFileUpload = (info) => {
     if (info.file.status !== 'uploading') {
       console.log(info.file, info.fileList);
     }
     
     if (info.file.status === 'done') {
-      // 获取文件
+      // Get file
       const uploadedFile = info.file.originFileObj;
       setFile(uploadedFile);
       
-      // 解析CSV
+      // Parse CSV
       Papa.parse(uploadedFile, {
         header: true,
         complete: (results) => {
           setCsvData(results.data);
           setHeaders(results.meta.fields);
-          message.success(`${info.file.name} 文件解析成功`);
+          message.success(`${info.file.name} file parsed successfully`);
           setActiveTab('fields');
         },
         error: (error) => {
-          message.error(`CSV解析错误: ${error.message}`);
+          message.error(`CSV parsing error: ${error.message}`);
         }
       });
     } else if (info.file.status === 'error') {
-      message.error(`${info.file.name} 文件上传失败`);
+      message.error(`${info.file.name} file upload failed`);
     }
   };
 
-  // 自定义上传组件处理函数
+  // Custom upload component handler
   const customRequest = ({ file, onSuccess }) => {
     setTimeout(() => {
       onSuccess("ok");
     }, 0);
   };
 
-  // 开始研究过程
+  // Start research process
   const startResearch = async () => {
     if (selectedFields.length === 0) {
-      message.warning('请至少选择一个要研究的字段');
+      message.warning('Please select at least one field to research');
       return;
     }
     
     if (!apiKey) {
-      message.warning('请输入OpenRouter API密钥');
+      message.warning('Please enter OpenRouter API key');
       return;
     }
     
@@ -115,7 +115,7 @@ const App = () => {
     setActiveTab('progress');
     
     try {
-      // 找到公司名称列
+      // Find company name column
       const companyColumn = headers.find(h => 
         h.toLowerCase().includes('company') || 
         h.toLowerCase().includes('account')
@@ -124,21 +124,21 @@ const App = () => {
       let enriched = [...csvData];
       let processedCount = 0;
       
-      // 为每个公司进行研究
+      // Research for each company
       for (let i = 0; i < csvData.length; i++) {
         const company = csvData[i][companyColumn];
         
         if (!company) continue;
         
         try {
-          // 模拟发送到后端API (在实际实现中，这应该是真实的API调用)
+          // Simulate sending to backend API (this should be a real API call in actual implementation)
           const mockResponse = await axios.post('http://localhost:5001/api/research', {
             company,
             fields: selectedFields,
             apiKey
           });
           
-          // // 模拟响应
+          // // Mock response
           // const mockResponse = {
           //   data: {
           //     results: {
@@ -151,7 +151,7 @@ const App = () => {
           //   }
           // };
           
-          // 过滤只包含请求的字段
+          // Filter to include only requested fields
           const filteredResults = {};
           selectedFields.forEach(field => {
             if (mockResponse.data.results[field]) {
@@ -161,41 +161,41 @@ const App = () => {
             }
           });
           
-          // 更新丰富的数据
+          // Update enriched data
           enriched[i] = {
             ...csvData[i],
             ...filteredResults
           };
           
-          // 更新进度
+          // Update progress
           processedCount++;
           setProgress(Math.round((processedCount / csvData.length) * 100));
           
-          // 添加一些延迟以模拟真实API调用
+          // Add some delay to simulate real API call
           await new Promise(resolve => setTimeout(resolve, 300));
         } catch (error) {
-          console.error('研究公司时出错:', company, error);
+          console.error('Error researching company:', company, error);
           notification.error({
-            message: '研究错误',
-            description: `处理 "${company}" 时出错: ${error.message}`
+            message: 'Research Error',
+            description: `Error processing "${company}": ${error.message}`
           });
         }
       }
       
       setEnrichedData(enriched);
-      message.success('研究完成!');
+      message.success('Research completed!');
       setActiveTab('results');
     } catch (error) {
-      message.error('研究过程中出错: ' + error.message);
+      message.error('Error during research process: ' + error.message);
     } finally {
       setResearching(false);
     }
   };
 
-  // 下载丰富的CSV数据
+  // Download enriched CSV data
   const downloadEnrichedCSV = () => {
     if (enrichedData.length === 0) {
-      message.warning('没有可下载的数据');
+      message.warning('No data available for download');
       return;
     }
     
@@ -212,13 +212,13 @@ const App = () => {
 
   return (
     <div className="app-container">
-      <h1>AI公司研究工具</h1>
+      <h1>AI Company Research Tool</h1>
       
       <Tabs activeKey={activeTab} onChange={setActiveTab}>
-        <TabPane tab="1. 上传CSV" key="upload">
+        <TabPane tab="1. Upload CSV" key="upload">
           <Card className="upload-card">
-            <h2>上传包含公司名称的CSV文件</h2>
-            <p>CSV文件应至少包含一列公司名称。</p>
+            <h2>Upload CSV File with Company Names</h2>
+            <p>CSV file should contain at least one column with company names.</p>
             
             <Dragger
               className="csv-uploader"
@@ -228,22 +228,22 @@ const App = () => {
               accept=".csv"
               maxCount={1}
             >
-              <Button icon={<UploadOutlined />}>点击上传CSV文件</Button>
-              <p className="upload-hint">或拖放CSV文件到此处</p>
+              <Button icon={<UploadOutlined />}>Click to Upload CSV File</Button>
+              <p className="upload-hint">Or drag and drop CSV file here</p>
             </Dragger>
             
             {csvData.length > 0 && (
               <div className="upload-info">
-                <p>已加载 {csvData.length} 条记录</p>
+                <p>Loaded {csvData.length} records</p>
                 <Button type="primary" onClick={() => setActiveTab('fields')}>
-                  下一步: 选择字段
+                  Next: Select Fields
                 </Button>
               </div>
             )}
           </Card>
         </TabPane>
         
-        <TabPane tab="2. 选择研究字段" key="fields">
+        <TabPane tab="2. Select Research Fields" key="fields">
           <FieldSelector 
             availableFields={researchFields}
             selectedFields={selectedFields}
@@ -255,31 +255,31 @@ const App = () => {
           />
         </TabPane>
         
-        <TabPane tab="3. 研究进度" key="progress">
+        <TabPane tab="3. Research Progress" key="progress">
           <Card className="progress-card">
-            <h2>研究进度</h2>
+            <h2>Research Progress</h2>
             <Progress percent={progress} status={researching ? "active" : "normal"} />
             
             {researching && (
-              <p>正在处理公司数据... {progress}% 完成</p>
+              <p>Processing company data... {progress}% complete</p>
             )}
             
             {!researching && progress === 100 && (
               <div className="progress-complete">
-                <p>研究已完成!</p>
-                <Button type="primary" onClick={() => setActiveTab('results')}>查看结果</Button>
+                <p>Research completed!</p>
+                <Button type="primary" onClick={() => setActiveTab('results')}>View Results</Button>
               </div>
             )}
           </Card>
         </TabPane>
         
-        <TabPane tab="4. 结果" key="results">
+        <TabPane tab="4. Results" key="results">
           <Card className="results-card">
-            <h2>研究结果</h2>
+            <h2>Research Results</h2>
             
             {enrichedData.length > 0 ? (
               <div className="results-container">
-                <p>共处理了 {enrichedData.length} 家公司的数据</p>
+                <p>Processed data for {enrichedData.length} companies</p>
                 
                 <div className="table-container">
                   <Table
@@ -299,7 +299,7 @@ const App = () => {
                   </Table>
                   
                   {enrichedData.length > 10 && (
-                    <p className="table-note">显示前10条记录。下载CSV以查看所有数据。</p>
+                    <p className="table-note">Showing first 10 records. Download CSV to see all data.</p>
                   )}
                 </div>
                 
@@ -308,11 +308,11 @@ const App = () => {
                   onClick={downloadEnrichedCSV}
                   icon={<FileOutlined />}
                 >
-                  下载完整CSV
+                  Download Complete CSV
                 </Button>
               </div>
             ) : (
-              <p>没有可用的结果。请先完成研究过程。</p>
+              <p>No results available. Please complete the research process first.</p>
             )}
           </Card>
         </TabPane>

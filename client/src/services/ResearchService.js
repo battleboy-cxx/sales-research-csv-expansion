@@ -4,11 +4,11 @@ const API_URL = process.env.REACT_APP_API_URL || '/api';
 
 class ResearchService {
   /**
-   * 发送研究请求到后端
-   * @param {string} company - 公司名称
-   * @param {Array} fields - 要研究的字段列表
-   * @param {string} apiKey - OpenRouter API密钥
-   * @returns {Promise} - 返回结果的Promise
+   * Send research request to backend
+   * @param {string} company - Company name
+   * @param {Array} fields - List of fields to research
+   * @param {string} apiKey - OpenRouter API key
+   * @returns {Promise} - Promise with results
    */
   static async researchCompany(company, fields, apiKey) {
     try {
@@ -20,29 +20,29 @@ class ResearchService {
       
       return response.data;
     } catch (error) {
-      console.error('研究服务错误:', error);
+      console.error('Research service error:', error);
       
-      // 格式化错误信息以便前端使用
+      // Format error message for frontend use
       if (error.response) {
-        throw new Error(error.response.data.error || '服务器错误');
+        throw new Error(error.response.data.error || 'Server error');
       } else if (error.request) {
-        throw new Error('无法连接到服务器');
+        throw new Error('Could not connect to server');
       } else {
-        throw new Error('请求配置错误');
+        throw new Error('Request configuration error');
       }
     }
   }
   
   /**
-   * 批量处理多个公司
-   * @param {Array} companies - 公司名称数组
-   * @param {Array} fields - 要研究的字段列表
-   * @param {string} apiKey - OpenRouter API密钥
-   * @param {Function} progressCallback - 进度回调函数
-   * @returns {Promise} - 包含所有结果的Promise
+   * Process multiple companies in batch
+   * @param {Array} companies - Array of company names
+   * @param {Array} fields - List of fields to research
+   * @param {string} apiKey - OpenRouter API key
+   * @param {Function} progressCallback - Progress callback function
+   * @returns {Promise} - Promise with all results
    */
   static async batchResearch(companies, fields, apiKey, progressCallback) {
-    // 针对大量公司的处理，使用后端批处理接口
+    // For large number of companies, use backend batch processing
     if (companies.length > 10) {
       try {
         const response = await axios.post(`${API_URL}/batch-research`, {
@@ -53,12 +53,12 @@ class ResearchService {
         
         return response.data.results;
       } catch (error) {
-        console.error('批量研究服务错误:', error);
-        throw new Error(error.response?.data?.error || '批量处理失败');
+        console.error('Batch research service error:', error);
+        throw new Error(error.response?.data?.error || 'Batch processing failed');
       }
     }
     
-    // 对于少量公司，使用前端循环处理
+    // For small number of companies, process in frontend loop
     const results = [];
     let completed = 0;
     
@@ -88,9 +88,9 @@ class ResearchService {
   }
   
   /**
-   * 上传CSV文件
-   * @param {File} file - CSV文件
-   * @returns {Promise} - 上传结果的Promise
+   * Upload CSV file
+   * @param {File} file - CSV file
+   * @returns {Promise} - Promise with upload result
    */
   static async uploadCSV(file) {
     try {
@@ -105,15 +105,15 @@ class ResearchService {
       
       return response.data;
     } catch (error) {
-      console.error('文件上传错误:', error);
-      throw new Error('文件上传失败');
+      console.error('File upload error:', error);
+      throw new Error('File upload failed');
     }
   }
   
   /**
-   * 分析CSV文件
-   * @param {File} file - CSV文件
-   * @returns {Promise} - 分析结果的Promise
+   * Analyze CSV file
+   * @param {File} file - CSV file
+   * @returns {Promise} - Promise with analysis result
    */
   static async analyzeCSV(file) {
     try {
@@ -128,31 +128,31 @@ class ResearchService {
       
       return response.data;
     } catch (error) {
-      console.error('CSV分析错误:', error);
-      throw new Error('CSV分析失败');
+      console.error('CSV analysis error:', error);
+      throw new Error('CSV analysis failed');
     }
   }
   
   /**
-   * 将研究结果合并回原始CSV数据
-   * @param {Array} originalData - 原始CSV数据数组
-   * @param {Array} researchResults - 研究结果数组
-   * @param {string} companyField - 公司名称的字段名
-   * @returns {Array} - 合并后的数据数组
+   * Merge research results back into original CSV data
+   * @param {Array} originalData - Original CSV data array
+   * @param {Array} researchResults - Research results array
+   * @param {string} companyField - Company name field
+   * @returns {Array} - Merged data array
    */
   static mergeResults(originalData, researchResults, companyField) {
-    // 创建研究结果的查找表
+    // Create lookup table for research results
     const resultMap = {};
     researchResults.forEach(result => {
       resultMap[result.company] = result;
     });
     
-    // 合并数据
+    // Merge data
     return originalData.map(row => {
       const company = row[companyField];
       const researchData = resultMap[company] || {};
       
-      // 移除结果中的元数据字段
+      // Remove metadata fields from results
       const { company: _, status: __, error: ___, ...data } = researchData;
       
       return {
@@ -163,16 +163,16 @@ class ResearchService {
   }
   
   /**
-   * 检查服务器健康状态
-   * @returns {Promise} - 健康检查结果
+   * Check server health status
+   * @returns {Promise} - Health check result
    */
   static async checkHealth() {
     try {
       const response = await axios.get(`${API_URL}/health`);
       return response.data;
     } catch (error) {
-      console.error('健康检查错误:', error);
-      throw new Error('服务器连接失败');
+      console.error('Health check error:', error);
+      throw new Error('Failed to connect to server');
     }
   }
 }

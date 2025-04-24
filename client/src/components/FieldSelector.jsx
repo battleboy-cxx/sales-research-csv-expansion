@@ -16,8 +16,8 @@ import {
 } from '@ant-design/icons';
 
 /**
- * 字段选择组件
- * 允许用户选择要研究的公司数据字段
+ * Field selection component
+ * Allows users to select company data fields for research
  */
 const FieldSelector = ({ 
   availableFields, 
@@ -31,7 +31,7 @@ const FieldSelector = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [customField, setCustomField] = useState('');
   
-  // 根据搜索词过滤字段
+  // Filter fields based on search term
   const filteredFields = searchTerm 
     ? availableFields.filter(field => 
         field.label.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -39,7 +39,7 @@ const FieldSelector = ({
       )
     : availableFields;
   
-  // 处理字段选择/取消
+  // Handle field selection/deselection
   const handleFieldToggle = (fieldValue) => {
     const newSelection = selectedFields.includes(fieldValue)
       ? selectedFields.filter(f => f !== fieldValue)
@@ -48,7 +48,7 @@ const FieldSelector = ({
     onChange(newSelection);
   };
   
-  // 添加自定义字段
+  // Add custom field
   const addCustomField = () => {
     if (customField && !availableFields.some(f => f.value === customField)) {
       const newField = {
@@ -57,41 +57,41 @@ const FieldSelector = ({
         custom: true
       };
       
-      // 通知父组件添加新字段
+      // Notify parent component to add new field
       onChange([...selectedFields, customField]);
       setCustomField('');
-      message.success(`已添加自定义字段: ${customField}`);
+      message.success(`Custom field added: ${customField}`);
     } else {
-      message.warning('字段已存在或输入为空');
+      message.warning('Field already exists or input is empty');
     }
   };
   
-  // 分类字段
+  // Categorize fields
   const categorizedFields = {
-    '公司基本信息': filteredFields.filter(f => 
+    'Company Basic Information': filteredFields.filter(f => 
       f.value.includes('Company') || 
       f.value.includes('Website') ||
       f.value.includes('Industry') || 
       f.value.includes('Business') || 
       f.value.includes('Employee')
     ),
-    '客户服务': filteredFields.filter(f => 
+    'Customer Service': filteredFields.filter(f => 
       f.value.includes('Customer') || 
       f.value.includes('Service')
     ),
-    '市场和财务': filteredFields.filter(f => 
+    'Market and Finance': filteredFields.filter(f => 
       f.value.includes('Revenue') || 
       f.value.includes('Financial') || 
       f.value.includes('Market') || 
       f.value.includes('Rank') || 
       f.value.includes('PE Backing')
     ),
-    '技术栈': filteredFields.filter(f => 
+    'Technology Stack': filteredFields.filter(f => 
       f.value.includes('Platform') || 
       f.value.includes('System') || 
       f.value.includes('Tool')
     ),
-    '其他': filteredFields.filter(f => 
+    'Others': filteredFields.filter(f => 
       !f.value.includes('Customer') &&
       !f.value.includes('Service') &&
       !f.value.includes('Revenue') &&
@@ -108,34 +108,34 @@ const FieldSelector = ({
   return (
     <Card className="field-selector-card">
       <div className="field-selector-header">
-        <h2>选择要研究的公司数据字段</h2>
-        <p>选择要为每个公司收集的数据字段。字段越多，处理时间越长。</p>
+        <h2>Select Company Data Fields for Research</h2>
+        <p>Choose the data fields to collect for each company. More fields mean longer processing time.</p>
       </div>
       
       <Form layout="vertical">
         <Form.Item 
-          label="OpenRouter API密钥" 
+          label="OpenRouter API Key" 
           required
           tooltip={{
-            title: '您需要一个有效的OpenRouter API密钥来使用perplexity/sonar-pro模型',
+            title: 'You need a valid OpenRouter API key to use the perplexity/sonar-pro model',
             icon: <InfoCircleOutlined />
           }}
         >
           <Input.Password
             value={apiKey}
             onChange={(e) => onApiKeyChange(e.target.value)}
-            placeholder="输入您的OpenRouter API密钥"
+            placeholder="Enter your OpenRouter API key"
           />
           <div className="field-selector-api-hint">
             <InfoCircleOutlined style={{ marginRight: '8px' }} />
-            <span>您可以从 <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer">OpenRouter网站</a> 获取API密钥</span>
+            <span>You can get an API key from the <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer">OpenRouter website</a></span>
           </div>
         </Form.Item>
       </Form>
       
       <div className="field-selector-search">
         <Input
-          placeholder="搜索字段"
+          placeholder="Search fields"
           prefix={<SearchOutlined />}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -145,7 +145,7 @@ const FieldSelector = ({
       
       <div className="field-selector-selection">
         <div className="field-selector-selected">
-          <h3>已选择 ({selectedFields.length})</h3>
+          <h3>Selected ({selectedFields.length})</h3>
           <div className="selected-tags">
             {selectedFields.length > 0 ? (
               selectedFields.map(field => {
@@ -163,7 +163,7 @@ const FieldSelector = ({
                 );
               })
             ) : (
-              <p className="field-selector-empty">未选择任何字段</p>
+              <p className="field-selector-empty">No fields selected</p>
             )}
           </div>
         </div>
@@ -182,12 +182,12 @@ const FieldSelector = ({
             onChange(e.target.checked ? all : []);
           }}
         >
-          全选 / Select All
+          Select All
         </Checkbox>
       </div>
         
         <div className="field-selector-available">
-          <h3>可用字段</h3>
+          <h3>Available Fields</h3>
           
           {Object.entries(categorizedFields).map(([category, fields]) => (
             fields.length > 0 && (
@@ -214,10 +214,10 @@ const FieldSelector = ({
       </div>
       
       <div className="field-selector-custom">
-        <h3>添加自定义字段</h3>
+        <h3>Add Custom Field</h3>
         <div className="custom-field-input">
           <Input
-            placeholder="输入自定义字段名称"
+            placeholder="Enter custom field name"
             value={customField}
             onChange={(e) => setCustomField(e.target.value)}
             style={{ width: 'calc(100% - 90px)', marginRight: '8px' }}
@@ -227,7 +227,7 @@ const FieldSelector = ({
             onClick={addCustomField}
             disabled={!customField.trim()}
           >
-            添加
+            Add
           </Button>
         </div>
       </div>
@@ -239,7 +239,7 @@ const FieldSelector = ({
           disabled={isLoading || selectedFields.length === 0 || !apiKey}
           loading={isLoading}
         >
-          {isLoading ? '处理中...' : '开始研究'}
+          {isLoading ? 'Processing...' : 'Start Research'}
         </Button>
       </div>
     </Card>

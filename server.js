@@ -6,7 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const axios = require('axios');
 
-// 创建Express应用
+// Create Express application
 const app = express();
 const PORT = process.env.PORT || 5001;
 
@@ -28,7 +28,7 @@ const systemPrompt = `You are a professonal analyst on company/industry report. 
 | Leads, Name                               | Sales representative responsible for the account             | **Alden Morse**                                   | If not Presets, ignore this field                                                     |
 | Company name                              | Company official name                                        | Zenni Optical                                   |                                                     |
 | Website                                   | Company's official website URL                               | https://www.zennioptical.com                          | Company profile/market research                                                      |
-| Billing State/Province                    | Location of company's billing address                        | Virginia                                          | Use https://builtwith.com/meta.<br />Like: visit https://builtwith.com/meta/zennioptical.com and search Location in pagesource                                                      |
+| Billing State/Province                    | Location of company's billing address                        | Virginia                                          | Use https://builtwith.com/meta/{comany_website}.<br />Like: visit https://builtwith.com/meta/zennioptical.com and search Location in pagesource                                                      |
 | Current E-Commerce Platform               | Current e-commerce solution in use                           | Shopify Plan Advanced/Basic                       | Presets                                                      |
 | Company Established Year                  | Year when company was founded                                | 1926                                              | Company website/registration                                 |
 | Industry/Vertical                         | According to The Global Industry Classification Standard (GICS®), accurate to sub-Industries |                                                   | Company profile/market research                              |
@@ -64,25 +64,25 @@ const systemPrompt = `You are a professonal analyst on company/industry report. 
 The company you need to do research is: 
 `
 
-// 中间件
+// Middleware
 app.use(cors({
-    origin: 'http://localhost:3000', // 允许前端域访问
-    credentials: true, // 如果需要携带cookies
-    methods: ['GET', 'POST'] // 允许的HTTP方法
+    origin: 'http://localhost:3000', // Allow frontend domain access
+    credentials: true, // If cookies need to be included
+    methods: ['GET', 'POST'] // Allowed HTTP methods
   }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'client/build')));
 
-// 配置文件上传
+// Configure file upload
 const upload = multer({ 
   dest: 'uploads/',
-  limits: { fileSize: 10 * 1024 * 1024 } // 限制10MB
+  limits: { fileSize: 10 * 1024 * 1024 } // Limit to 10MB
 });
 
-// 上传文件端点
+// File upload endpoint
 app.post('/api/upload', upload.single('file'), (req, res) => {
   if (!req.file) {
-    return res.status(400).json({ error: '没有文件被上传' });
+    return res.status(400).json({ error: 'No file was uploaded' });
   }
   
   res.json({
@@ -92,8 +92,8 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
   });
 });
 
-// OpenRouter API封装
-// 用于调用 OpenRouter 上的 AI 进行公司信息研究
+// OpenRouter API wrapper
+// Used to call AI on OpenRouter for company information research
 async function callAIResearch(company, fields, apiKey) {
   try {
     const openRouterUrl = 'https://openrouter.ai/api/v1/chat/completions';
@@ -176,13 +176,13 @@ Format as CSV: "Field Name, Value (Source: URL)"`;
 
     return results;
   } catch (error) {
-    console.error('AI API调用错误:', error.message);
+    console.error('AI API call error:', error.message);
 
     if (error.response) {
-      console.error('API响应错误:', error.response.data);
-      throw new Error(`API错误: ${error.response.status} - ${JSON.stringify(error.response.data)}`);
+      console.error('API response error:', error.response.data);
+      throw new Error(`API error: ${error.response.status} - ${JSON.stringify(error.response.data)}`);
     } else if (error.request) {
-      throw new Error('无法从API获得响应');
+      throw new Error('Could not get response from API');
     } else {
       throw error;
     }
@@ -304,13 +304,13 @@ Format results as CSV with source URLs.`;
   }
 }
 
-// 研究API端点
+// Research API endpoint
 app.post('/api/research', async (req, res) => {
   try {
     const { company, fields, apiKey } = req.body;
     
     if (!company || !fields || !fields.length || !apiKey) {
-      return res.status(400).json({ error: '缺少必要参数' });
+      return res.status(400).json({ error: 'Missing required parameters' });
     }
     
     // Initial AI research
@@ -325,58 +325,58 @@ app.post('/api/research', async (req, res) => {
     
     res.json({ success: true, company, results });
   } catch (error) {
-    console.error('研究API错误:', error);
+    console.error('Research API error:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
-// 处理CSV文件分析的端点
+// Process CSV file analysis endpoint
 app.post('/api/analyze-csv', upload.single('file'), (req, res) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ error: '没有文件被上传' });
+      return res.status(400).json({ error: 'No file was uploaded' });
     }
     
-    // 读取上传的CSV文件
+    // Read uploaded CSV file
     const filePath = path.join(__dirname, req.file.path);
     const fileContent = fs.readFileSync(filePath, 'utf8');
     
-    // 分析逻辑可以在这里添加
-    // 例如，检测列名，推测可能的公司名称列等
+    // Analysis logic can be added here
+    // For example, detect column names, infer possible company name columns, etc.
     
     res.json({
       success: true,
       filename: req.file.filename,
       originalname: req.file.originalname,
-      fileContent: fileContent.substring(0, 1000) // 仅返回前1000个字符用于预览
+      fileContent: fileContent.substring(0, 1000) // Return first 1000 characters for preview
     });
     
-    // 清理临时文件
+    // Clean up temporary file
     fs.unlinkSync(filePath);
   } catch (error) {
-    console.error('CSV分析错误:', error);
+    console.error('CSV analysis error:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
-// 批量处理请求端点
+// Batch processing endpoint
 app.post('/api/batch-research', async (req, res) => {
   try {
     const { companies, fields, apiKey } = req.body;
     
     if (!companies || !companies.length || !fields || !fields.length || !apiKey) {
-      return res.status(400).json({ error: '缺少必要参数' });
+      return res.status(400).json({ error: 'Missing required parameters' });
     }
     
-    // 创建一个结果数组
+    // Create a results array
     const results = [];
     
-    // 限制并发请求数量
+    // Limit concurrent requests
     const concurrencyLimit = 3;
     let activeRequests = 0;
     let completedRequests = 0;
     
-    // 使用Promise处理并发请求
+    // Handle concurrent requests with Promise
     await new Promise((resolve, reject) => {
       const processQueue = async () => {
         if (completedRequests >= companies.length) {
@@ -406,17 +406,17 @@ app.post('/api/batch-research', async (req, res) => {
           activeRequests--;
           completedRequests++;
           
-          // 继续处理队列
+          // Continue processing queue
           processQueue();
         }
         
-        // 如果还有未处理的请求但已达到并发限制，设置定时器稍后再检查
+        // If there are unprocessed requests but reached concurrency limit, check again later
         if (completedRequests + activeRequests < companies.length) {
           setTimeout(processQueue, 100);
         }
       };
       
-      // 启动初始处理
+      // Start initial processing
       for (let i = 0; i < Math.min(concurrencyLimit, companies.length); i++) {
         processQueue();
       }
@@ -424,24 +424,24 @@ app.post('/api/batch-research', async (req, res) => {
     
     res.json({ success: true, results });
   } catch (error) {
-    console.error('批量研究错误:', error);
+    console.error('Batch research error:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
-// 健康检查端点
+// Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// 默认路由 - 服务React前端
+// Default route - Serve React frontend
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
 });
 
-// 启动服务器
+// Start server
 app.listen(PORT, () => {
-  console.log(`server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
 
-module.exports = app; // 用于测试
+module.exports = app; // For testing

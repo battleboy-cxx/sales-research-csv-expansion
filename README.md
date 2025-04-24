@@ -1,138 +1,138 @@
-# AI公司研究工具
+# AI Company Research Tool
 
-这是一个利用AI自动研究和填充公司信息的工具，能够将仅包含公司名称的CSV文件转换为包含丰富业务情报的详细报告。
+A tool that uses AI to automatically research and populate company information, converting CSV files containing only company names into detailed reports with rich business intelligence.
 
-## 功能特点
+## Features
 
-- 上传CSV文件进行批量公司研究
-- 自定义选择需要的研究字段
-- 使用OpenRouter API接入perplexity/sonar-pro等AI模型
-- 实时展示处理进度
-- 导出包含研究结果的丰富CSV文件
+- Upload CSV files for batch company research
+- Customize research fields
+- Access perplexity/sonar-pro and other AI models via OpenRouter API
+- Real-time processing progress
+- Export enriched CSV files with research results
 
-## 技术栈
+## Tech Stack
 
-- **前端**：React + AntDesign UI
-- **后端**：Node.js + Express
-- **AI集成**：OpenRouter API (perplexity/sonar-pro模型)
-- **数据处理**：PapaParse (CSV解析)
+- **Frontend**: React + AntDesign UI
+- **Backend**: Node.js + Express
+- **AI Integration**: OpenRouter API (perplexity/sonar-pro model)
+- **Data Processing**: PapaParse (CSV parsing)
 
-## 快速开始
+## Quick Start
 
-### 前提条件
+### Prerequisites
 
 - Node.js (v14+)
-- OpenRouter API密钥 (https://openrouter.ai)
+- OpenRouter API key (https://openrouter.ai)
 
-### 安装步骤
+### Installation Steps
 
-1. 克隆仓库
+1. Clone repository
 
 ```bash
 git clone https://github.com/yourusername/company-research-tool.git
 cd company-research-tool
 ```
 
-2. 安装依赖
+2. Install dependencies
 
 ```bash
-# 安装后端依赖
+# Install backend dependencies
 npm install
 
-# 安装前端依赖
+# Install frontend dependencies
 npm run client-install
 ```
 
-3. 配置环境变量
+3. Configure environment variables
 
-创建`.env`文件在根目录，添加以下内容：
+Create `.env` file in root directory and add:
 
 ```
 PORT=5001
 ```
 
-创建`/client/.env`，添加一下内容:
+Create `/client/.env` and add:
 ```
 PORT = 3000
 REACT_APP_OPENROUTER_API_KEY = {YOUR_OPENROUTER_API_KEY}
 ```
 
-4. 启动开发服务器
+4. Start development server
 
 ```bash
-# 同时运行前端和后端
+# Run frontend and backend together
 npm run dev
 
-# 只运行后端
+# Run backend only
 npm run server
 
-# 只运行前端
+# Run frontend only
 npm run client
 ```
 
-应用将在 [http://localhost:3000](http://localhost:3000) 运行，API服务器在 [http://localhost:5001](http://localhost:5001).
+The application will run at [http://localhost:3000](http://localhost:3000), with the API server at [http://localhost:5001](http://localhost:5001).
 
-## 使用方法
+## Usage
 
-1. **准备CSV文件**：CSV文件至少需要包含一列公司名称
-2. **上传文件**：在应用中上传CSV文件
-3. **选择研究字段**：从可用字段列表中选择要研究的公司数据点
-4. **输入API密钥**：提供您的OpenRouter API密钥
-5. **开始研究**：点击"开始研究"按钮开始处理
-6. **查看结果**：处理完成后查看研究结果
-7. **下载结果**：下载包含所有研究数据的CSV文件
+1. **Prepare CSV file**: CSV file must contain at least one column with company names
+2. **Upload file**: Upload CSV file in the application
+3. **Select research fields**: Choose company data points to research from available fields
+4. **Enter API key**: Provide your OpenRouter API key
+5. **Start research**: Click "Start Research" button to begin processing
+6. **View results**: Review research results after processing completes
+7. **Download results**: Download CSV file containing all research data
 
-## 研究字段说明
+## Research Fields Description
 
-工具可支持的研究字段包括但不限于：
+The tool supports research fields including but not limited to:
 
-- **公司基本信息**：成立年份、行业、业务覆盖(B2B/B2C)等
-- **财务信息**：公司收入、财务状况、私募支持等
-- **市场信息**：竞争格局、市场份额、排名等
-- **技术栈**：电子商务平台、客服工单系统等
-- **客服相关**：客服代理数量、客服挑战等
+- **Company Basic Information**: Year established, industry, business coverage (B2B/B2C), etc.
+- **Financial Information**: Company revenue, financial status, PE backing, etc.
+- **Market Information**: Competition landscape, market share, ranking, etc.
+- **Tech Stack**: E-commerce platform, customer service ticketing system, etc.
+- **Customer Service**: Number of customer service agents, customer service challenges, etc.
 
-## 部署
+## Deployment
 
-### 生产环境构建
+### Production Build
 
 ```bash
-# 生成生产构建
+# Generate production build
 npm run build
 ```
 
-### 部署到Heroku
+### Deploy to Heroku
 
 ```bash
-# 登录到Heroku
+# Login to Heroku
 heroku login
 
-# 创建应用
+# Create application
 heroku create your-app-name
 
-# 推送到Heroku
+# Push to Heroku
 git push heroku main
 ```
 
-## 定制与扩展
+## Customization & Extension
 
-### 添加新研究字段
+### Adding New Research Fields
 
-1. 在`App.jsx`中的`researchFields`数组添加新字段
-2. 在后端`server.js`中的AI提示词模板中包含新字段
+1. Add new fields to the `researchFields` array in `App.jsx`
+2. Include new fields in the AI prompt template in `server.js`
 
-### 更换AI模型
+### Change AI Model
 
-在`server.js`文件中，修改OpenRouter API请求的`model`参数：
+In `server.js`, modify the `model` parameter in OpenRouter API request:
 
 ```javascript
-// 使用不同的AI模型
+// Use different AI model
 const response = await axios.post(openRouterUrl, {
-  model: 'anthropic/claude-3-haiku-20240307', // 更改为所需模型
-  // ...其他参数
+  model: 'anthropic/claude-3-haiku-20240307', // Change to desired model
+  // ...other parameters
 });
 ```
 
-## 许可证
+## License
 
 MIT
