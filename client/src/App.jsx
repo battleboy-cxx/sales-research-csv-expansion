@@ -20,7 +20,6 @@ import axios from 'axios';
 
 // 导入自定义组件
 import FieldSelector from './components/FieldSelector';
-
 const { TabPane } = Tabs;
 
 const App = () => {
@@ -33,25 +32,33 @@ const App = () => {
   const [progress, setProgress] = useState(0);
   const [enrichedData, setEnrichedData] = useState([]);
   const [activeTab, setActiveTab] = useState('upload');
-  const [apiKey, setApiKey] = useState('');
+  const [apiKey, setApiKey] = useState(process.env.REACT_APP_OPENROUTER_API_KEY || '');
   
-  // 研究字段选项
+  // Research field options
   const researchFields = [
-    { label: '公司创建年份', value: 'Company Established Year', description: '公司成立的年份' },
-    { label: '行业/垂直领域', value: 'Industry/Vertical', description: '公司所属的行业或垂直领域' },
-    { label: '业务覆盖 (B2B/B2C)', value: 'Business Coverage', description: '公司业务覆盖的范围，B2B、B2C或两者兼有' },
-    { label: '公司收入', value: 'Company Revenue', description: '公司的年度收入数据' },
-    { label: '员工总数', value: 'Total Employee', description: '公司员工的总数量' },
-    { label: '客服代理数量', value: 'Total Customer Service Agent', description: '客户服务代理的数量' },
-    { label: '客服挑战', value: 'Customer Service Challenges', description: '客户服务团队面临的主要挑战' },
-    { label: '客服技术挑战', value: 'Customer Service Technology Challenges', description: '客户服务团队面临的技术性挑战' },
-    { label: '竞争格局', value: 'Competition Landscape', description: '公司在行业中的竞争态势' },
-    { label: '市场排名和份额', value: 'Rank and Market %', description: '公司在市场中的排名和占有率' },
-    { label: '最新动态', value: 'Key Updates', description: '公司近期的重要更新和动态' },
-    { label: '财务状况', value: 'Financial Status', description: '公司的整体财务状况' },
-    { label: '私募支持', value: 'PE Backing', description: '公司是否获得私募资金支持' },
-    { label: '电子商务平台', value: 'eCommerce Platform', description: '公司使用的电子商务平台' },
-    { label: '当前客服工单系统', value: 'Current Customer Service Ticketing System', description: '公司使用的客户服务工单系统' }
+    { label: 'Leads Name', value: 'Leads, Name', description: 'Sales representative responsible for the account' },
+    { label: 'Company Name', value: 'Company name', description: 'Company official name' },
+    { label: 'Website', value: 'Website', description: 'Company\'s official website URL' },
+    { label: 'Billing State/Province', value: 'Billing State/Province', description: 'Location of company\'s billing address' },
+    { label: 'Current E-Commerce Platform', value: 'Current E-Commerce Platform', description: 'Current e-commerce solution in use' },
+    { label: 'Company Established Year', value: 'Company Established Year', description: 'Year when company was founded' },
+    { label: 'Industry/Vertical', value: 'Industry/Vertical', description: 'According to The Global Industry Classification Standard (GICS®), accurate to sub-Industries' },
+    { label: 'Business Coverage', value: 'Business Coverage', description: 'B2B, B2C, or Both' },
+    { label: 'Company Revenue', value: 'Company Revenue', description: 'Annual revenue figures, with original website or news source' },
+    { label: 'Total Employee', value: 'Total Employee', description: 'Number of employees' },
+    { label: 'Total Customer Service Agent', value: 'Total Customer Service Agent', description: 'Number of Customer Service Agents' },
+    { label: 'Customer Service Challenges', value: 'Customer Service Challenges', description: 'Key business issues faced by customer service team/department' },
+    { label: 'Customer Service Technology Challenges', value: 'Customer Service Technology Challenges', description: 'Technical issues or needs from customer service team/department' },
+    { label: 'Competition Landscape', value: 'Competition Landscape', description: 'Overview of competitors in the industry' },
+    { label: 'Rank and Market %', value: 'Rank and Market %', description: 'Market position and share percentage' },
+    { label: 'Key Updates', value: 'Key Updates', description: 'Recent significant news (last 6 months), prioritizing customer service updates' },
+    { label: 'Financial Status', value: 'Financial Status', description: 'Funding, challenges, bankruptcy information' },
+    { label: 'PE Backing', value: 'PE Backing', description: 'Private Equity investment status' },
+    { label: 'eCommerce Platform', value: 'eCommerce Platform', description: 'Current ecommerce platform used' },
+    { label: 'Current Customer Service Ticketing System', value: 'Current Customer Service Ticketing System', description: 'Ticketing System currently in use' },
+    { label: 'LiveChat Tool', value: 'LiveChat Tool', description: 'Current LiveChat tool used on the website' },
+    { label: 'Site Traffic', value: 'Site Traffic', description: 'Website traffic volume information' },
+    { label: 'ERP System', value: 'ERP System', description: 'Enterprise Resource Planning system used by the company' }
   ];
 
   // 处理文件上传

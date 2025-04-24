@@ -70,6 +70,7 @@ const FieldSelector = ({
   const categorizedFields = {
     '公司基本信息': filteredFields.filter(f => 
       f.value.includes('Company') || 
+      f.value.includes('Website') ||
       f.value.includes('Industry') || 
       f.value.includes('Business') || 
       f.value.includes('Employee')
@@ -91,10 +92,6 @@ const FieldSelector = ({
       f.value.includes('Tool')
     ),
     '其他': filteredFields.filter(f => 
-      !f.value.includes('Company') && 
-      !f.value.includes('Industry') &&
-      !f.value.includes('Business') &&
-      !f.value.includes('Employee') &&
       !f.value.includes('Customer') &&
       !f.value.includes('Service') &&
       !f.value.includes('Revenue') &&
