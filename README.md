@@ -14,7 +14,7 @@
 
 - **前端**：React + AntDesign UI
 - **后端**：Node.js + Express
-- **AI集成**：OpenRouter API (DeepSeek模型)
+- **AI集成**：OpenRouter API (perplexity/sonar-pro模型)
 - **数据处理**：PapaParse (CSV解析)
 
 ## 快速开始
