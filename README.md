@@ -1,70 +1,133 @@
-# Getting Started with Create React App
+# AI公司研究工具
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+这是一个利用AI自动研究和填充公司信息的工具，能够将仅包含公司名称的CSV文件转换为包含丰富业务情报的详细报告。
 
-## Available Scripts
+## 功能特点
 
-In the project directory, you can run:
+- 上传CSV文件进行批量公司研究
+- 自定义选择需要的研究字段
+- 使用OpenRouter API接入DeepSeek等AI模型
+- 实时展示处理进度
+- 导出包含研究结果的丰富CSV文件
 
-### `npm start`
+## 技术栈
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **前端**：React + AntDesign UI
+- **后端**：Node.js + Express
+- **AI集成**：OpenRouter API (DeepSeek模型)
+- **数据处理**：PapaParse (CSV解析)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 快速开始
 
-### `npm test`
+### 前提条件
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Node.js (v14+)
+- OpenRouter API密钥 (https://openrouter.ai)
 
-### `npm run build`
+### 安装步骤
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. 克隆仓库
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+git clone https://github.com/yourusername/company-research-tool.git
+cd company-research-tool
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. 安装依赖
 
-### `npm run eject`
+```bash
+# 安装后端依赖
+npm install
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+# 安装前端依赖
+npm run client-install
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. 配置环境变量
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+创建`.env`文件在根目录，添加以下内容：
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```
+PORT=5001
+NODE_ENV=development
+```
 
-## Learn More
+4. 启动开发服务器
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+# 同时运行前端和后端
+npm run dev
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+# 只运行后端
+npm run server
 
-### Code Splitting
+# 只运行前端
+npm run client
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+应用将在 [http://localhost:3000](http://localhost:3000) 运行，API服务器在 [http://localhost:5001](http://localhost:5001).
 
-### Analyzing the Bundle Size
+## 使用方法
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+1. **准备CSV文件**：CSV文件至少需要包含一列公司名称
+2. **上传文件**：在应用中上传CSV文件
+3. **选择研究字段**：从可用字段列表中选择要研究的公司数据点
+4. **输入API密钥**：提供您的OpenRouter API密钥
+5. **开始研究**：点击"开始研究"按钮开始处理
+6. **查看结果**：处理完成后查看研究结果
+7. **下载结果**：下载包含所有研究数据的CSV文件
 
-### Making a Progressive Web App
+## 研究字段说明
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+工具可支持的研究字段包括但不限于：
 
-### Advanced Configuration
+- **公司基本信息**：成立年份、行业、业务覆盖(B2B/B2C)等
+- **财务信息**：公司收入、财务状况、私募支持等
+- **市场信息**：竞争格局、市场份额、排名等
+- **技术栈**：电子商务平台、客服工单系统等
+- **客服相关**：客服代理数量、客服挑战等
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 部署
 
-### Deployment
+### 生产环境构建
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```bash
+# 生成生产构建
+npm run build
+```
 
-### `npm run build` fails to minify
+### 部署到Heroku
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```bash
+# 登录到Heroku
+heroku login
+
+# 创建应用
+heroku create your-app-name
+
+# 推送到Heroku
+git push heroku main
+```
+
+## 定制与扩展
+
+### 添加新研究字段
+
+1. 在`App.jsx`中的`researchFields`数组添加新字段
+2. 在后端`server.js`中的AI提示词模板中包含新字段
+
+### 更换AI模型
+
+在`server.js`文件中，修改OpenRouter API请求的`model`参数：
+
+```javascript
+// 使用不同的AI模型
+const response = await axios.post(openRouterUrl, {
+  model: 'anthropic/claude-3-haiku-20240307', // 更改为所需模型
+  // ...其他参数
+});
+```
+
+## 许可证
+
+MIT
