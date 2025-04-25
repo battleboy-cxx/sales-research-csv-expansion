@@ -155,7 +155,7 @@ Format as CSV: "Field Name, Value (Source: URL)"`;
     }, {
       headers: {
         'Authorization': `Bearer ${apiKey}`,
-        'HTTP-Referer': 'http://localhost:3000',
+        'HTTP-Referer': 'https://sales-research-csv-expansion-lkwh.vercel.app',
         'X-Title': 'Company Research Tool'
       }
     });
@@ -223,7 +223,7 @@ async function extractTechnicalData(company, apiKey) {
     }, {
       headers: {
         'Authorization': `Bearer ${apiKey}`,
-        'HTTP-Referer': 'http://localhost:3000',
+        'HTTP-Referer': 'https://sales-research-csv-expansion-lkwh.vercel.app',
         'X-Title': 'Technical Stack Analyzer'
       }
     });
@@ -276,7 +276,7 @@ Format results as CSV with source URLs.`;
     }, {
       headers: {
         'Authorization': `Bearer ${apiKey}`,
-        'HTTP-Referer': 'http://localhost:3000',
+        'HTTP-Referer': 'https://sales-research-csv-expansion-lkwh.vercel.app',
         'X-Title': 'Company Research Tool - Enhanced Search'
       }
     });

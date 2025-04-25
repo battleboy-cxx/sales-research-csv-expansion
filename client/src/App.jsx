@@ -131,25 +131,12 @@ const App = () => {
         if (!company) continue;
         
         try {
-          // Simulate sending to backend API (this should be a real API call in actual implementation)
-          const mockResponse = await axios.post('http://localhost:5001/api/research', {
+          // Use relative URL path instead of hardcoded localhost
+          const mockResponse = await axios.post('/api/research', {
             company,
             fields: selectedFields,
             apiKey
           });
-          
-          // // Mock response
-          // const mockResponse = {
-          //   data: {
-          //     results: {
-          //       'Company Established Year': '2010',
-          //       'Industry/Vertical': '技术/软件',
-          //       'Business Coverage': 'B2B',
-          //       'Company Revenue': '约1亿美元',
-          //       'Total Employee': '250-500人',
-          //     }
-          //   }
-          // };
           
           // Filter to include only requested fields
           const filteredResults = {};
