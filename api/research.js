@@ -1,15 +1,6 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 const axios = require('axios');
 
-// Create Express application
-const app = express();
-const PORT = process.env.PORT || 5001;
-
+// 系统提示，从原始 server.js 复制过来
 const systemPrompt = `You are a professonal analyst on company/industry report. Please help me populate company data based on the following data structure. I may provide some existing fields for the company.
 
 ## Important Notes:
@@ -62,36 +53,7 @@ const systemPrompt = `You are a professonal analyst on company/industry report. 
 ## Company Info
 
 The company you need to do research is: 
-`
-
-// Middleware
-app.use(cors({
-    // allow all origins
-    origin: '*',
-    credentials: true, // If cookies need to be included
-    methods: ['GET', 'POST'] // Allowed HTTP methods
-  }));
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'client/build')));
-
-// Configure file upload
-const upload = multer({ 
-  dest: 'uploads/',
-  limits: { fileSize: 10 * 1024 * 1024 } // Limit to 10MB
-});
-
-// File upload endpoint
-app.post('/api/upload', upload.single('file'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: 'No file was uploaded' });
-  }
-  
-  res.json({
-    success: true,
-    filename: req.file.filename,
-    originalname: req.file.originalname
-  });
-});
+`;
 
 // OpenRouter API wrapper
 // Used to call AI on OpenRouter for company information research
@@ -190,51 +152,6 @@ Format as CSV: "Field Name, Value (Source: URL)"`;
   }
 }
 
-// Add this function to specifically extract technical data
-async function extractTechnicalData(company, apiKey) {
-  const websiteUrl = company.includes('http') ? company : `https://${company}`;
-  const domain = websiteUrl.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
-  
-  try {
-    // This simulates what you'd do with an actual BuiltWith API
-    // You'll need to replace this with actual API calls or web scraping
-    const prompt = `Please visit BuiltWith.com and analyze the technical stack for ${domain}.
-    Specifically extract:
-    1. eCommerce Platform
-    2. Customer Service Ticketing System
-    3. LiveChat Tool
-    4. ERP System
-    
-    If you find any of this information, include the specific text found and its location in the page source.
-    Format your response as CSV.`;
-    
-    const openRouterUrl = 'https://openrouter.ai/api/v1/chat/completions';
-    const response = await axios.post(openRouterUrl, {
-      model: 'perplexity/sonar-pro',
-      messages: [
-        { 
-          role: 'system', 
-          content: 'You are a web technology analyzer that can extract technical stack information from websites.' 
-        },
-        { role: 'user', content: prompt }
-      ],
-      temperature: 0.1,
-      max_tokens: 1000
-    }, {
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'HTTP-Referer': 'http://localhost:3000',
-        'X-Title': 'Technical Stack Analyzer'
-      }
-    });
-    
-    return response.data.choices[0].message.content.trim();
-  } catch (error) {
-    console.error('Technical data extraction error:', error.message);
-    return null;
-  }
-}
-
 // Add this function to enhance research with fallback strategies
 async function enhanceResearch(company, results, apiKey) {
   const unknownFields = [];
@@ -276,7 +193,7 @@ Format results as CSV with source URLs.`;
     }, {
       headers: {
         'Authorization': `Bearer ${apiKey}`,
-        'HTTP-Referer': 'http://localhost:3000',
+        'HTTP-Referer': 'https://sales-research-csv-expansion-lkwh.vercel.app',
         'X-Title': 'Company Research Tool - Enhanced Search'
       }
     });
@@ -305,144 +222,49 @@ Format results as CSV with source URLs.`;
   }
 }
 
-// Research API endpoint
-app.post('/api/research', async (req, res) => {
-  try {
-    const { company, fields, apiKey } = req.body;
-    
-    if (!company || !fields || !fields.length || !apiKey) {
-      return res.status(400).json({ error: 'Missing required parameters' });
-    }
-    
-    // Initial AI research
-    let results = await callAIResearch(company, fields, apiKey);
-    
-    // Check for unknown fields and try to enhance results
-    const unknownCount = Object.values(results).filter(v => v === "Unknown").length;
-    if (unknownCount > 0) {
-      console.log(`Found ${unknownCount} unknown fields, attempting enhancement...`);
-      results = await enhanceResearch(company, results, apiKey);
-    }
-    
-    res.json({ success: true, company, results });
-  } catch (error) {
-    console.error('Research API error:', error);
-    res.status(500).json({ error: error.message });
+// Export a serverless function handler for Vercel
+module.exports = async (req, res) => {
+  // Enable CORS
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+  );
+  
+  // Handle OPTIONS request (preflight)
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
   }
-});
-
-// Process CSV file analysis endpoint
-app.post('/api/analyze-csv', upload.single('file'), (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ error: 'No file was uploaded' });
-    }
-    
-    // Read uploaded CSV file
-    const filePath = path.join(__dirname, req.file.path);
-    const fileContent = fs.readFileSync(filePath, 'utf8');
-    
-    // Analysis logic can be added here
-    // For example, detect column names, infer possible company name columns, etc.
-    
-    res.json({
-      success: true,
-      filename: req.file.filename,
-      originalname: req.file.originalname,
-      fileContent: fileContent.substring(0, 1000) // Return first 1000 characters for preview
-    });
-    
-    // Clean up temporary file
-    fs.unlinkSync(filePath);
-  } catch (error) {
-    console.error('CSV analysis error:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Batch processing endpoint
-app.post('/api/batch-research', async (req, res) => {
-  try {
-    const { companies, fields, apiKey } = req.body;
-    
-    if (!companies || !companies.length || !fields || !fields.length || !apiKey) {
-      return res.status(400).json({ error: 'Missing required parameters' });
-    }
-    
-    // Create a results array
-    const results = [];
-    
-    // Limit concurrent requests
-    const concurrencyLimit = 3;
-    let activeRequests = 0;
-    let completedRequests = 0;
-    
-    // Handle concurrent requests with Promise
-    await new Promise((resolve, reject) => {
-      const processQueue = async () => {
-        if (completedRequests >= companies.length) {
-          return resolve();
-        }
-        
-        if (activeRequests < concurrencyLimit && completedRequests + activeRequests < companies.length) {
-          const index = completedRequests + activeRequests;
-          const company = companies[index];
-          
-          activeRequests++;
-          
-          try {
-            let result = await callAIResearch(company, fields, apiKey);
-            
-            // Enhance results if there are unknown fields
-            const unknownCount = Object.values(result).filter(v => v === "Unknown").length;
-            if (unknownCount > 0) {
-              result = await enhanceResearch(company, result, apiKey);
-            }
-            
-            results.push({ company, results: result });
-          } catch (error) {
-            results.push({ company, error: error.message });
-          }
-          
-          activeRequests--;
-          completedRequests++;
-          
-          // Continue processing queue
-          processQueue();
-        }
-        
-        // If there are unprocessed requests but reached concurrency limit, check again later
-        if (completedRequests + activeRequests < companies.length) {
-          setTimeout(processQueue, 100);
-        }
-      };
+  
+  // Only process POST requests for the research endpoint
+  if (req.method === 'POST') {
+    try {
+      const { company, fields, apiKey } = req.body;
       
-      // Start initial processing
-      for (let i = 0; i < Math.min(concurrencyLimit, companies.length); i++) {
-        processQueue();
+      if (!company || !fields || !fields.length || !apiKey) {
+        return res.status(400).json({ error: 'Missing required parameters' });
       }
-    });
-    
-    res.json({ success: true, results });
-  } catch (error) {
-    console.error('Batch research error:', error);
-    res.status(500).json({ error: error.message });
+      
+      // Initial AI research
+      let results = await callAIResearch(company, fields, apiKey);
+      
+      // Check for unknown fields and try to enhance results
+      const unknownCount = Object.values(results).filter(v => v === "Unknown").length;
+      if (unknownCount > 0) {
+        console.log(`Found ${unknownCount} unknown fields, attempting enhancement...`);
+        results = await enhanceResearch(company, results, apiKey);
+      }
+      
+      res.status(200).json({ success: true, company, results });
+    } catch (error) {
+      console.error('Research API error:', error);
+      res.status(500).json({ error: error.message });
+    }
+  } else {
+    // Handle non-POST requests
+    res.status(405).json({ error: 'Method not allowed' });
   }
-});
-
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
-
-// Default route - Serve React frontend
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-module.exports = app; // For testing
+};
