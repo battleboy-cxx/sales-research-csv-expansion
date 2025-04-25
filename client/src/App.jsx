@@ -198,6 +198,7 @@ const App = () => {
   return (
     <div className="app-container">
       <h1>AI Company Research Tool</h1>
+      <p>A powerful tool for VOCAI sales team to analsis our potential clients</p>
       
       <Tabs activeKey={activeTab} onChange={setActiveTab}>
         <TabPane tab="1. Upload CSV" key="upload">
