@@ -16,7 +16,6 @@ const systemPrompt = `You are a professonal analyst on company/industry report. 
 ## Data Fields Candidates, Add each filed as an additional to the spreadsheet
 | Field Name                                | Description                                                  | Example Value                                     | Collection Method                                            |
 | ----------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------- | ------------------------------------------------------------ |
-| Leads, Name                               | Sales representative responsible for the account             | **Alden Morse**                                   | If not Presets, ignore this field                                                     |
 | Company name                              | Company official name                                        | Zenni Optical                                   |                                                     |
 | Website                                   | Company's official website URL                               | https://www.zennioptical.com                          | Company profile/market research                                                      |
 | Billing State/Province                    | Location of company's billing address                        | Virginia                                          | Use https://builtwith.com/meta/{comany_website}.<br />Like: visit https://builtwith.com/meta/zennioptical.com and search Location in pagesource                                                      |
@@ -172,11 +171,12 @@ async function enhanceResearch(company, results, apiKey) {
 ${unknownFields.join(', ')}
 
 Please do targeted research specifically for these fields. Try using:
-1. LinkedIn data
-2. Job postings (to infer systems and tools)
-3. Employee profiles and skills
-4. Company technology stack articles
-5. Industry-specific databases
+1. Information from Buildwith webite: https://builtwith.com/{company_website} 和 https://builtwith.com/meta/{company_websites},
+2. LinkedIn data
+3. Job postings (to infer systems and tools)
+4. Employee profiles and skills
+5. Company technology stack articles
+6. Industry-specific databases
 
 Format results as CSV with source URLs.`;
 

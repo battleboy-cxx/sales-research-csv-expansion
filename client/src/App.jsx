@@ -37,8 +37,6 @@ const App = () => {
   
   // Research field options
   const researchFields = [
-    { label: 'Leads Name', value: 'Leads, Name', description: 'Sales representative responsible for the account' },
-    { label: 'Company Name', value: 'Company name', description: 'Company official name' },
     { label: 'Website', value: 'Website', description: 'Company\'s official website URL' },
     { label: 'Billing State/Province', value: 'Billing State/Province', description: 'Location of company\'s billing address' },
     { label: 'Current E-Commerce Platform', value: 'Current E-Commerce Platform', description: 'Current e-commerce solution in use' },
